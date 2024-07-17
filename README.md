@@ -1,1 +1,1 @@
-# pocketbase_go_extend
+# 포켓베이스 Go 확장판
