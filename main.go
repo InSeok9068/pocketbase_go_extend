@@ -19,6 +19,7 @@ func main() {
 		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
 		e.Router.GET("/hello/:name", func(c echo.Context) error {
 			name := c.PathParam("name")
+			log.Println(name)
 			return c.JSON(http.StatusOK, map[string]string{"message": "Hello " + name})
 		})
 
