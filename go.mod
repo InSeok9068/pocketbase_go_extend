@@ -1,8 +1,8 @@
 module app
 
-go 1.22.4
+go 1.22.5
 
-require github.com/pocketbase/pocketbase v0.22.18
+require github.com/pocketbase/pocketbase v0.22.19
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7 // indirect
