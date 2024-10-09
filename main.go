@@ -1,6 +1,8 @@
 package main
 
 import (
+	"embed"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -11,12 +13,31 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
+//go:embed views
+var viewsFS embed.FS
+
 func main() {
 	app := pocketbase.New()
 
-	// serves static files from the provided public dir (if exists)
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
+		// serves static files from the provided public dir (if exists)
+		e.Router.GET("/public/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
+
+		e.Router.GET("/", func(c echo.Context) error {
+			f, err := viewsFS.Open("views/index.html")
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+
+			html, err := io.ReadAll(f) // ioutil.ReadAll 대신 io.ReadAll 사용
+			if err != nil {
+				return err
+			}
+
+			return c.HTML(http.StatusOK, string(html))
+		})
+
 		e.Router.GET("/hello/:name", func(c echo.Context) error {
 			name := c.PathParam("name")
 			log.Println(name)
